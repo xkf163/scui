@@ -13,6 +13,21 @@
 		<el-form-item prop="password">
 			<el-input v-model="form.password" prefix-icon="el-icon-lock" clearable show-password :placeholder="$t('login.PWPlaceholder')"></el-input>
 		</el-form-item>
+
+		<el-form-item prop="inputCode">
+			<el-col :span="16">
+				<el-input v-model="form.inputCode" size="large" type="text" placeholder="请输入验证码">
+<!--					<a-icon slot="prefix" type="smile" :style="{ color: 'rgba(0,0,0,.25)' }"/>-->
+				</el-input>
+			</el-col>
+			<el-col :span="8" style="text-align: right">
+				<img v-if="requestCodeSuccess" style="margin-top: 2px;" :src="randCodeImage" @click="handleChangeCheckCode"/>
+				<img v-else style="margin-top: 2px;" src="../../../assets/checkcode.png" @click="handleChangeCheckCode"/>
+			</el-col>
+		</el-form-item>
+
+
+
 		<el-form-item style="margin-bottom: 10px;">
 				<el-col :span="12">
 					<el-checkbox :label="$t('login.rememberMe')" v-model="form.autologin"></el-checkbox>
@@ -31,9 +46,14 @@
 </template>
 
 <script>
+	import http from "@/utils/request";
+
 	export default {
 		data() {
 			return {
+				requestCodeSuccess: false,
+				randCodeImage: '',
+				currdatetime: '',
 				userType: 'admin',
 				form: {
 					user: "admin",
@@ -50,6 +70,9 @@
 				},
 				islogin: false,
 			}
+		},
+		created() {
+			this.handleChangeCheckCode();
 		},
 		watch:{
 			userType(val){
@@ -118,6 +141,22 @@
 				})
 				this.$message.success("Login Success 登录成功")
 				this.islogin = false
+			},
+			/**刷新验证码*/
+			handleChangeCheckCode(){
+				this.currdatetime = new Date().getTime();
+				this.form.inputCode = ''
+				http.get(`/api/sys/randomImage/${this.currdatetime}`).then(res=>{
+					if(res.success){
+						this.randCodeImage = res.result
+						this.requestCodeSuccess=true
+					}else{
+						this.$message.error(res.message)
+						this.requestCodeSuccess=false
+					}
+				}).catch(()=>{
+					this.requestCodeSuccess=false
+				})
 			},
 		}
 	}
