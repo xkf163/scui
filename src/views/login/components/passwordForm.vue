@@ -16,13 +16,13 @@
 
 		<el-form-item prop="inputCode">
 			<el-col :span="16">
-				<el-input v-model="form.inputCode" size="large" type="text" placeholder="请输入验证码">
+				<el-input v-model="form.inputCode" prefix-icon="el-icon-help"  size="large" type="text" placeholder="请输入验证码">
 <!--					<a-icon slot="prefix" type="smile" :style="{ color: 'rgba(0,0,0,.25)' }"/>-->
 				</el-input>
 			</el-col>
 			<el-col :span="8" style="text-align: right">
-				<img v-if="requestCodeSuccess" style="margin-top: 2px;" :src="randCodeImage" @click="handleChangeCheckCode"/>
-				<img v-else style="margin-top: 2px;" src="../../../assets/checkcode.png" @click="handleChangeCheckCode"/>
+				<img v-if="requestCodeSuccess" :src="randCodeImage" @click="handleChangeCheckCode"/>
+				<img v-else styl src="../../../assets/checkcode.png" @click="handleChangeCheckCode"/>
 			</el-col>
 		</el-form-item>
 
@@ -57,7 +57,7 @@
 				userType: 'admin',
 				form: {
 					user: "admin",
-					password: "admin",
+					password: "123456",
 					autologin: false
 				},
 				rules: {
@@ -89,6 +89,8 @@
 
 		},
 		methods: {
+
+
 			async login(){
 
 				var validate = await this.$refs.loginForm.validate().catch(()=>{})
@@ -97,15 +99,20 @@
 				this.islogin = true
 				var data = {
 					username: this.form.user,
-					password: this.$TOOL.crypto.MD5(this.form.password)
+					//password: this.$TOOL.crypto.MD5(this.form.password),
+					password: this.form.password,
+					captcha: this.form.inputCode,
+					checkKey: this.currdatetime,
+					remember_me: this.form.autologin,
 				}
 				//获取token
 				var user = await this.$API.auth.token.post(data)
+				console.log("登录成功：",user)
 				if(user.code == 200){
-					this.$TOOL.cookie.set("TOKEN", user.data.token, {
+					this.$TOOL.cookie.set("TOKEN", user.result.token, {
 						expires: this.form.autologin? 24*60*60 : 0
 					})
-					this.$TOOL.data.set("USER_INFO", user.data.userInfo)
+					this.$TOOL.data.set("USER_INFO", user.result.userInfo)
 				}else{
 					this.islogin = false
 					this.$message.warning(user.message)
@@ -118,8 +125,8 @@
 				}else{
 					menu = await this.$API.demo.menu.get()
 				}
-				if(menu.code == 200){
-					if(menu.data.menu.length==0){
+				if(menu.code == 0){
+					if(menu.result.menu.length==0){
 						this.islogin = false
 						this.$alert("当前用户无任何菜单权限，请联系系统管理员", "无权限访问", {
 							type: 'error',
@@ -127,9 +134,9 @@
 						})
 						return false
 					}
-					this.$TOOL.data.set("MENU", menu.data.menu)
-					this.$TOOL.data.set("PERMISSIONS", menu.data.permissions)
-					this.$TOOL.data.set("DASHBOARDGRID", menu.data.dashboardGrid)
+					this.$TOOL.data.set("MENU", menu.result.menu)
+					//this.$TOOL.data.set("PERMISSIONS", menu.result.permissions)
+					//this.$TOOL.data.set("DASHBOARDGRID", menu.result.dashboardGrid)
 				}else{
 					this.islogin = false
 					this.$message.warning(menu.message)

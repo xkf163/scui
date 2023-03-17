@@ -3,7 +3,7 @@ const DEFAULT_CONFIG = {
 	APP_NAME: process.env.VUE_APP_TITLE,
 
 	//首页地址
-	DASHBOARD_URL: "/dashboard",
+	DASHBOARD_URL: "/dashboard/analysis",
 
 	//版本号
 	APP_VER: "1.6.9",
@@ -18,10 +18,10 @@ const DEFAULT_CONFIG = {
 	TIMEOUT: 10000,
 
 	//TokenName
-	TOKEN_NAME: "Authorization",
+	TOKEN_NAME: "X-Access-Token",
 
 	//Token前缀，注意最后有个空格，如不需要需设置空字符串
-	TOKEN_PREFIX: "Bearer ",
+	TOKEN_PREFIX: "",
 
 	//追加其他头
 	HEADERS: {},
