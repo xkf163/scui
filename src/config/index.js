@@ -3,7 +3,7 @@ const DEFAULT_CONFIG = {
 	APP_NAME: process.env.VUE_APP_TITLE,
 
 	//首页地址
-	DASHBOARD_URL: "/dashboard/analysis",
+	DASHBOARD_URL: "/dashboard",
 
 	//版本号
 	APP_VER: "1.6.9",

@@ -134,6 +134,15 @@
 						})
 						return false
 					}
+					console.log("menu",menu.result.menu)
+
+					menu ={"code":200,"result":{"menu":[
+						{"name":"home","path":"/home","meta":{"title":"首页","icon":"el-icon-eleme-filled","type":"menu"},"children":[
+							{"name":"dashboard","path":"/dashboard","meta":{"title":"控制台","icon":"el-icon-menu","affix":true},"component":"home"},
+							{"name":"userCenter","path":"/usercenter","meta":{"title":"帐号信息","icon":"el-icon-user","tag":"NEW"},"component":"userCenter"}]
+						}]
+					}}
+
 					this.$TOOL.data.set("MENU", menu.result.menu)
 					//this.$TOOL.data.set("PERMISSIONS", menu.result.permissions)
 					//this.$TOOL.data.set("DASHBOARDGRID", menu.result.dashboardGrid)
